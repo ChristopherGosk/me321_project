@@ -3,10 +3,8 @@
 clear; clc; close all;
 
 %%initial parameter: unit: m, degree, rad/sec
-r1 = 7.8*10^(-2); % m  o2o3
-r2 = 2.5*10^(-2); % m  o2a2
-r3 = 8.5*10^(-2);
-r4 = 8.5*10^(-2) - r3; % m remainder of o2B
+r1 = 5*10^(-2); % m  o2o51
+r2 = 2*10^(-2); % m  o2a2
 r5 = 10*10^(-2); % m BC
 r7 = 5*10^(-2); % m o2o4
 % and so on ...
@@ -29,11 +27,11 @@ ddtheta2 = 0;
 %% Part 1- Calculations for kinematic variables, caculated based on loop closure eqn
 theta3 = atan((r2.*sin(theta2))./(r2.*cos(theta2)-r1))
 r3 = r2.*sin(theta2)./(sin(theta3))
-r4 = 8.5*10^(-2) - r3
+r4 = 8.5*10^(-2) - abs(r3)
 
 theta5 = acos((-r2.*sin(theta2)-r4.*sin(theta3)-r7)/r5)
 
-r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5)
+r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5) %maybe needs a - sign at the start??
 % Hint: Check if the angle needs to be adjusted to its true value
 % Hint: Check this for all other angles too
 
@@ -49,7 +47,7 @@ dr3 = (-r2.*dtheta3.*sin(theta2).*cos(theta3)-r2.*dtheta2.*sin(theta3).*cos(thet
 
 dr4 = -dr3
 
-dr6 = -r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dtheta5.*cos(theta5)
+dr6 = r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dtheta5.*cos(theta5)
 
 
 %and so on
@@ -57,27 +55,54 @@ dr6 = -r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dt
 %% Plot vars;
 
 % Plot all desired deliverables. 
-
+% Plot mechanisum  
+for x = 2:1:360;
 figure (1)
-plot(theta2,theta3)
-grid on;
-title('$\theta_3$ vs $\theta_2$', 'Interpreter','latex')
-xlabel('\theta_2   unit: rad')
-ylabel('\theta_3   unit: rad')
+plot (0,0,'o')
+hold on
+plot (5*10^(-2),0,'o')
+hold on
+plot(-5*10^(-2),r6(x),'o')
+plot(-r4(x)*cos(theta3(x)),-r4(x)*sin(theta3(x)),'o')
+rectangle('Position',[-5.5*10^(-2) r6(x)-1*10^(-2) 1*10^(-2) 2*10^(-2)])
 
-figure (2)
-plot(theta2,theta5)
-grid on;
-title('$\theta_3$ vs r6', 'Interpreter','latex')
-xlabel('\theta_2   unit: rad')
-ylabel('r6   unit: m')
+A = [0 r2.*cosd(x) r1+r3(x).*cosd(90+theta3(x))];
+B = [0 r2.*sind(x) r3(x).*sind(theta3(x))]; 
+plot (0,0)
+plot(A,B)
+axis equal
+%axis ([-0.06 0.06 -0.12 0.12])
+line(A,B)
+hold off
 
-figure (3)
-plot(theta2,r6)
-grid on;
-title('$\theta_5$ vs r6', 'Interpreter','latex')
-xlabel('\theta_5   unit: rad')
-ylabel('r6   unit: m')
+end
+% figure (1)
+% plot(theta2,theta3)
+% grid on;
+% title('$\theta_2$ vs $\theta_3$', 'Interpreter','latex')
+% xlabel('\theta_2   unit: rad')
+% ylabel('\theta_3   unit: rad')
+% 
+% figure (2)
+% plot(theta2,dtheta3)
+% grid on;
+% title('$\theta_2$ vs $\theta_3 \prime$', 'Interpreter','latex')
+% xlabel('\theta_2   unit: rad')
+% ylabel('\theta_3 \prime  unit: rad')
+% 
+% figure (3)
+% plot(theta2,theta5)
+% grid on;
+% title('$\theta_2$ vs $\theta_5$', 'Interpreter','latex')
+% xlabel('\theta_2   unit: rad')
+% ylabel('\theta_5   unit: rad')
+% 
+% figure (4)
+% plot(theta2,dtheta5)
+% grid on;
+% title('$\theta_2$ vs $\theta_5 \prime$', 'Interpreter','latex')
+% xlabel('\theta_2   unit: rad')
+% ylabel('\theta_5 \prime  unit: rad')
 
 % and so on
  

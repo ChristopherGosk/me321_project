@@ -3,10 +3,9 @@
 clear; clc; close all;
 
 %%initial parameter: unit: m, degree, rad/sec
-r1 = 7.8*10^(-2); % m  o2o3
-r2 = 2.5*10^(-2); % m  o2a2
-r3 = 8.5*10^(-2);
-r4 = 8.5*10^(-2) - r3; % m remainder of o2B
+r1 = 5*10^(-2); % m  o2o44
+r2 = 2*10^(-2); % m  o2a2
+r4 = 8.5*10^(-2); % m 
 r5 = 10*10^(-2); % m BC
 r7 = 5*10^(-2); % m o2o4
 % and so on ...
@@ -27,13 +26,11 @@ ddtheta2 = 0;
 % '*' is matrix multiplication
 
 %% Part 1- Calculations for kinematic variables, caculated based on loop closure eqn
-theta3 = atan((r2.*sin(theta2))./(r2.*cos(theta2)-r1))
-r3 = r2.*sin(theta2)./(sin(theta3))
-r4 = 8.5*10^(-2) - r3
+theta3 = atan((r2.*sin(theta2))./(r2.*cos(theta2)-r1));
+r3 = r2.*sin(theta2)./(sin(theta3));
+theta5 = acos((-r2.*sin(theta2)-r4.*sin(theta3)-r7)/r5);
 
-theta5 = acos((-r2.*sin(theta2)-r4.*sin(theta3)-r7)/r5)
-
-r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5)
+r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5); %maybe needs a - sign at the start??
 % Hint: Check if the angle needs to be adjusted to its true value
 % Hint: Check this for all other angles too
 
@@ -41,15 +38,15 @@ r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5)
 % and solve them for dtheta3, dtheta5 & dr6
 % and the same for the second derivatives. 
 
-dtheta3 = ((sec(theta2)).^2-((r2.*dtheta2.*cos(theta2))./r1))./(1+(r2.*sin(theta2))./r2.*cos(theta2)-r1)
+dtheta3 = ((sec(theta2)).^2-((r2.*dtheta2.*cos(theta2))./r1))./(1+(r2.*sin(theta2))./r2.*cos(theta2)-r1);
 
-dtheta5 = (r2.*dtheta2.*sin(theta2)+r4.*dtheta3.*sin(theta3))./(r5.*sin(theta5))
+dtheta5 = (r2.*dtheta2.*sin(theta2)+r4.*dtheta3.*sin(theta3))./(r5.*sin(theta5));
 
-dr3 = (-r2.*dtheta3.*sin(theta2).*cos(theta3)-r2.*dtheta2.*sin(theta3).*cos(theta2))./sin(theta3).^2
+dr3 = (-r2.*dtheta3.*sin(theta2).*cos(theta3)-r2.*dtheta2.*sin(theta3).*cos(theta2))./sin(theta3).^2;
 
-dr4 = -dr3
+dr4 = -dr3;
 
-dr6 = -r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dtheta5.*cos(theta5)
+dr6 = r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dtheta5.*cos(theta5);
 
 
 %and so on
@@ -58,30 +55,67 @@ dr6 = -r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dt
 
 % Plot all desired deliverables. 
 
+for x = 2:1:360 %Mechanism Animation
 figure (1)
+plot (0,0,'o')
+hold on
+plot (5*10^(-2),0,'o')
+hold on
+
+plot(-5*10^(-2),r6(x),'o')
+hold on
+plot(-r4*cos(theta3(x))+5*10^(-2),-r4*sin(theta3(x)),'o')
+hold on
+rectangle('Position',[-5.5*10^(-2) r6(x)-1*10^(-2) 1*10^(-2) 2*10^(-2)])
+
+A = [0 r2.*cosd(x) r1+r3(x).*cosd(90+theta3(x))];
+B = [0 r2.*sind(x) r3(x).*sind(theta3(x))]; 
+
+C = [-5*10^(-2) -r4*cos(theta3(x))+5*10^(-2)];
+D = [r6(x) -r4*sin(theta3(x))];
+
+E = [-r4*cos(theta3(x))+5*10^(-2) r2.*cosd(x)];
+F = [-r4*sin(theta3(x)) r2.*sind(x)];
+plot (0,0)
+plot(A,B)
+axis equal
+axis ([-0.06 0.06 -0.12 0.12])
+line(A,B)
+hold off
+line(C,D)
+hold off
+line(E,F)
+hold off
+
+end
+
+
+figure (2)
 plot(theta2,theta3)
 grid on;
 title('$\theta_2$ vs $\theta_3$', 'Interpreter','latex')
 xlabel('\theta_2   unit: rad')
 ylabel('\theta_3   unit: rad')
 
-figure (2)
+figure (3)
 plot(theta2,dtheta3)
 grid on;
+axis([0 7 -1 10])
 title('$\theta_2$ vs $\theta_3 \prime$', 'Interpreter','latex')
 xlabel('\theta_2   unit: rad')
 ylabel('\theta_3 \prime  unit: rad')
 
-figure (3)
+figure (4)
 plot(theta2,theta5)
 grid on;
 title('$\theta_2$ vs $\theta_5$', 'Interpreter','latex')
 xlabel('\theta_2   unit: rad')
 ylabel('\theta_5   unit: rad')
 
-figure (4)
+figure (5)
 plot(theta2,dtheta5)
 grid on;
+axis([0 7 -5 5])
 title('$\theta_2$ vs $\theta_5 \prime$', 'Interpreter','latex')
 xlabel('\theta_2   unit: rad')
 ylabel('\theta_5 \prime  unit: rad')
