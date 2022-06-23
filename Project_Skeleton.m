@@ -3,8 +3,8 @@
 clear; clc; close all;
 
 %%initial parameter: unit: m, degree, rad/sec
-r1 = 5*10^(-2); % m  o2o44
-r2 = 2*10^(-2); % m  o2a2
+r1 = 5*10^(-2); % m  o2o
+r2 = 2*10^(-2); % m  o2a
 r4 = 8.5*10^(-2); % m 
 r5 = 10*10^(-2); % m BC
 r7 = 5*10^(-2); % m o2o4
@@ -28,8 +28,7 @@ ddtheta2 = 0;
 %% Part 1- Calculations for kinematic variables, caculated based on loop closure eqn
 theta3 = atan((r2.*sin(theta2))./(r2.*cos(theta2)-r1));
 r3 = r2.*sin(theta2)./(sin(theta3));
-theta5 = acos((-r2.*sin(theta2)-r4.*sin(theta3)-r7)/r5);
-
+theta5 = acos((-r2.*sin(theta2)-r4.*sin(theta3)-r7)/r5)+pi;
 r6 = -r2.*sin(theta2)-r4.*sin(theta3)-r5.*sin(theta5); %maybe needs a - sign at the start??
 % Hint: Check if the angle needs to be adjusted to its true value
 % Hint: Check this for all other angles too
@@ -55,18 +54,21 @@ dr6 = r2.*dtheta2.*cos(theta2)-r4.*dtheta3.*cos(theta3)-dr4.*sin(theta3)-r5.*dth
 
 % Plot all desired deliverables. 
 
-for x = 2:1:360 %Mechanism Animation
+for x = 1:1:360 %Mechanism Animation
 figure (1)
-plot (0,0,'o')
+plot (0,0,'^','MarkerFaceColor', [0 0 0],'MarkerEdgeColor', [0 0 0])
 hold on
-plot (5*10^(-2),0,'o')
+plot (5*10^(-2),0,'^','MarkerFaceColor', [0 0 0],'MarkerEdgeColor', [0 0 0])
 hold on
 
-plot(-5*10^(-2),r6(x),'o')
+driver = [r2.*cosd(x) r2.*sind(x)];
+slider = polyshape([driver(1)-0.5*10^(-2) driver(1)-0.5*10^(-2) driver(1)+0.5*10^(-2) driver(1)+0.5*10^(-2)],[driver(2)+0.25*10^(-2) driver(2)-0.25*10^(-2) driver(2)-0.25*10^(-2) driver(2)+0.25*10^(-2)]);
+slider = rotate(slider, theta3(x).* (180/pi),[driver(1) driver(2)]);
+plot(slider, 'FaceColor', [0.9290 0.6940 0.1250]);
 hold on
-plot(-r4*cos(theta3(x))+5*10^(-2),-r4*sin(theta3(x)),'o')
+plot(-r4*cos(theta3(x))+5*10^(-2),-r4*sin(theta3(x)),'o','MarkerFaceColor', [0 0.4470 0.7410],'MarkerEdgeColor', [0 0.4470 0.7410])
 hold on
-rectangle('Position',[-5.5*10^(-2) r6(x)-1*10^(-2) 1*10^(-2) 2*10^(-2)])
+rectangle('Position',[-5.5*10^(-2) r6(x)-1*10^(-2) 1*10^(-2) 2*10^(-2)], 'FaceColor', [0.9290 0.6940 0.1250])
 
 A = [0 r2.*cosd(x) r1+r3(x).*cosd(90+theta3(x))];
 B = [0 r2.*sind(x) r3(x).*sind(theta3(x))]; 
